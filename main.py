@@ -59,6 +59,7 @@ def main():
 
         #print the answer rounded to 4 decimals
         print(round(answer, 4))
+        input("Press enter to exit")
     # except:
         # print("An error occurred, please recheck if all your inputs are valid")
 
