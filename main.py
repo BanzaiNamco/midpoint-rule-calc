@@ -5,7 +5,8 @@
 
 #import sympy parse_expr to parse the user input into a function
 from sympy.parsing.sympy_parser import parse_expr
-
+import numpy as np
+import matplotlib.pyplot as plt
 
 def get_function():
     user_input = input("Enter your function: ")
@@ -29,8 +30,8 @@ def solve_function(function, x):
     return answer
 
 def main():
-    # try:
-        #get user inputs
+    try:
+        # get user inputs
         function = get_function()
         lower_bound, upper_bound = get_bounds()
         intervals = get_num_of_intervals()
@@ -47,21 +48,47 @@ def main():
         #variable for summation of f(x)
         sumofFx = 0
 
-        #solve for the summation of f(x)
+        #lists for plotting
+        x_vals = [lower_bound]
+        y_vals = [solve_function(function, lower_bound)]
+        bar_heights = []
+
+        #solve for the summation part of the midpoint rule formula  
         for _ in range(intervals):
             #get the f(x) for each interval
-            sumofFx += solve_function(function, x)
-            #increment the x for each interval
+            fx = solve_function(function, x)
+            sumofFx += fx
+
+            #for plotting stuff
+            x_vals.append(x)
+            y_vals.append(fx)
+            bar_heights.append(fx)
+
+            #increment the x for each interval; move to the next midpoint
             x += deltaX
 
-        #deltaX * summation of f(x)
+        x_vals.append(upper_bound)
+        y_vals.append(solve_function(function, upper_bound))
+        #deltaX * summation of f(x);
         answer = deltaX * sumofFx
 
         #print the answer rounded to 4 decimals
-        print(round(answer, 4))
-        input("Press enter to exit")
-    # except:
-        # print("An error occurred, please recheck if all your inputs are valid")
+        print("\nRiemann sum using midpoint rule:",round(answer, 4))
+
+        title = 'f(x) = ' + function + '\n[' + str(lower_bound) + ', ' + str(upper_bound) + '] n = ' + str(intervals) + ', Midpoint Riemann Sum: ' + str(round(answer, 4))
+        print(lower_bound + np.arange(intervals) * deltaX + midpoint)
+        plt.plot(x_vals, y_vals, label='Function')
+        plt.bar(lower_bound + np.arange(intervals) * deltaX + midpoint, bar_heights, width=deltaX, alpha=0.5, label='Midpoint Riemann Sum')
+        plt.xlabel('x')
+        plt.ylabel('y')
+        plt.title(title)
+        plt.legend()
+        plt.grid(True)
+        plt.show()
+
+        input("\nPress enter to exit")
+    except:
+        print("An error occurred, please recheck if all your inputs are valid.")
 
 if __name__ == "__main__":
     main()
